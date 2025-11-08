@@ -1,75 +1,128 @@
-# Claude Commit - VS Code Extension
+# Claude Commit
 
-AI-powered Git commit message generator using Claude AI. Automatically generates conventional commit messages with a single click.
+**Already using Claude Code? Get the commit message button you deserve – at no extra cost.**
+
+A VS Code extension that brings the ✨ sparkle button to your Git panel, powered by the Claude CLI you already have. Generate intelligent commit messages without paying for additional AI services.
+
+## Why Claude Commit?
+
+You're already investing in Claude Code – whether it's Pro, Max ×5, or Max ×10. Why pay for Copilot or Cursor just for commit message generation? This extension leverages your existing Claude subscription to bring the same AI-powered commit message functionality directly to VS Code.
+
+**Zero additional cost. Zero complexity. Just works.**
 
 ## Features
 
-- **One-Click Generation**: Click the sparkle button in Source Control panel to generate commit messages
-- **Conventional Commits**: Generates properly formatted conventional commit messages
-- **Bilingual Support**: English and Ukrainian languages
-- **Flexible AI Backend**: Works with Claude Code CLI or Anthropic API
-- **Smart Fallback**: Automatically tries CLI first, then API
+- **One-click commit message generation**: The sparkle button ✨ you know and love, right in VS Code's Source Control panel
+- **Powered by your Claude CLI**: Uses your existing Claude installation – no extra API keys or subscriptions needed
+- **Context-aware analysis**: Understands your git diff to generate meaningful, conventional commit messages
+- **Bilingual support**: Works in English and Ukrainian
+- **Flexible backend**: Automatically uses Claude CLI, with API fallback option
+- **Seamless VS Code integration**: Works directly with the built-in Git interface
+
+## Requirements
+
+- VS Code 1.75.0 or higher
+- Claude CLI installed and authenticated (comes with your Claude Code subscription)
+- Git repository initialized in your workspace
+- Internet connection for AI generation
 
 ## Installation
 
-### From Source
+1. Install the extension from the VS Code Marketplace
+2. Ensure Claude CLI is installed and available in your system PATH
+3. Open a project with a Git repository
+4. Look for the sparkle ✨ button in your Source Control panel
 
-1. Clone this repository
-2. Navigate to the `vscode-extension` folder
-3. Run `npm install`
-4. Press F5 to open Extension Development Host
-5. Or run `vsce package` to create a .vsix file and install manually
+**That's it!** No configuration needed if you're using Claude CLI.
 
-## Setup
+## How to Use
 
-Choose one of the following methods:
+1. Make your code changes
+2. Stage your changes (optional – works with unstaged changes too)
+3. Click the sparkle ✨ button in the Source Control panel
+4. Review the AI-generated commit message
+5. Commit
 
-### Option 1: Claude Code CLI (Recommended)
+**No configuration, no setup wizards, no complexity.**
 
-Install Claude Code CLI:
-```bash
-# Follow instructions at https://docs.claude.com/claude-code
+## Extension Settings
+
+This extension keeps it simple with just a few optional settings:
+
+* `claude-commit.preferredMethod`: Choose AI backend (`auto`, `cli`, or `api`) – defaults to `auto`
+* `claude-commit.apiKey`: Your Anthropic API key (only needed if using API method)
+* `claude-commit.language`: Interface language (`en` for English, `ua` for Ukrainian)
+
+## Configuration Examples
+
+### Using only Claude CLI
+```json
+{
+    "claude-commit.preferredMethod": "cli"
+}
 ```
 
-### Option 2: Anthropic API
-
-1. Get your API key from https://console.anthropic.com/
-2. Add it to VS Code settings:
-   - Open Settings (Cmd+, or Ctrl+,)
-   - Search for "Claude Commit"
-   - Enter your API key in "Claude Commit: Api Key"
-
-Or set environment variable:
-```bash
-export ANTHROPIC_API_KEY="your-key-here"
+### Using Anthropic API as fallback
+```json
+{
+    "claude-commit.preferredMethod": "auto",
+    "claude-commit.apiKey": "your-api-key-here"
+}
 ```
 
-## Usage
+### Ukrainian interface
+```json
+{
+    "claude-commit.language": "ua"
+}
+```
 
-1. Make changes to your code
-2. Stage files with `git add` (or use VS Code Source Control UI)
-3. Click the **sparkle icon** ✨ in the Source Control panel (top right)
-4. The commit message will be automatically generated and inserted into the message box
-5. Review and commit!
+## Troubleshooting
 
-## Configuration
+### Claude CLI not found
 
-Open VS Code settings and search for "Claude Commit":
+If the extension can't find Claude CLI:
 
-- **API Key**: Your Anthropic API key (optional if using CLI)
-- **Preferred Method**: Choose between `auto`, `cli`, or `api`
-  - `auto`: Try CLI first, fallback to API
-  - `cli`: Use only Claude Code CLI
-  - `api`: Use only Anthropic API
-- **Language**: Choose `en` (English) or `ua` (Ukrainian)
+1. **Check Claude is installed**: Run in terminal:
+   ```bash
+   which claude
+   ```
+   This should show the path to Claude (e.g., `/Users/you/.nvm/versions/node/v22.13.0/bin/claude`)
 
-## Commands
+2. **Verify authentication**: Ensure Claude CLI is authenticated:
+   ```bash
+   claude setup-token
+   ```
 
-- **Claude Commit: Generate Commit Message** - Generate AI-powered commit message
+3. **Common issues**:
+   - **NVM users**: VS Code might not see NVM paths – restart VS Code after installing Claude
+   - **macOS**: If using zsh, paths might differ between terminal and VS Code
+   - **Windows**: Ensure Claude is in your system PATH
 
-Access via:
-- Sparkle button in Source Control panel
-- Command Palette (Cmd+Shift+P / Ctrl+Shift+P) → "Claude Commit: Generate"
+### No commit message generated
+
+1. Ensure you have changes in your repository (staged or unstaged)
+2. Check that Claude CLI is properly authenticated
+3. Try using API method as fallback:
+   - Get API key from https://console.anthropic.com/
+   - Add to settings: `claude-commit.apiKey`
+   - Set `claude-commit.preferredMethod` to `api`
+
+### Extension not working
+
+1. Check you're in a Git repository
+2. Open Output panel (View → Output)
+3. Look for error messages from the extension
+4. Try generating a commit message manually via Command Palette:
+   - Press `Cmd+Shift+P` (or `Ctrl+Shift+P`)
+   - Type "Claude Commit: Generate"
+
+## Privacy & Security
+
+- Your code changes are processed through Claude CLI or Anthropic API
+- No data is stored or transmitted by this extension beyond what Claude requires
+- Authentication is handled by your existing Claude CLI setup or API key
+- Code is only sent to Claude's servers through your authenticated session
 
 ## Examples
 
@@ -82,20 +135,20 @@ refactor(store): optimized cart state management
 docs(readme): updated installation instructions
 ```
 
-## Requirements
+## Contributing
 
-- VS Code 1.75.0 or higher
-- Git repository
-- One of:
-  - Claude Code CLI installed
-  - Anthropic API key
-
-## License
-
-MIT
+Found a bug or have a feature request? Please open an issue on our [GitHub repository](https://github.com/uaoa/claude-commit-vscode).
 
 ## Author
 
-Zakharii Melnyk
+Created by **Zakharii Melnyk**
 - GitHub: [@uaoa](https://github.com/uaoa)
-- LinkedIn: (https://www.linkedin.com/in/undef-zakhar)
+- LinkedIn: [undef-zakhar](https://www.linkedin.com/in/undef-zakhar)
+
+## License
+
+MIT License - see LICENSE file for details.
+
+---
+
+**Stop paying twice for AI commit messages. You've got Claude Code – now get the commit button. ✨**
