@@ -98,4 +98,4 @@ MIT
 
 Zakharii Melnyk
 - GitHub: [@uaoa](https://github.com/uaoa)
-- Email: contact@uaoa.dev
+- LinkedIn: (https://www.linkedin.com/in/undef-zakhar)
