@@ -3,7 +3,7 @@
 	"displayName": "Claude Commit",
 	"description": "AI-powered git commit message generator using Claude AI",
 	"version": "1.0.0",
-	"publisher": "uaoa",
+	"publisher": "ZakhariiMelnyk",
 	"engines": {
 		"vscode": "^1.75.0"
 	},
