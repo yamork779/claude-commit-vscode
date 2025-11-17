@@ -1,0 +1,34 @@
+import * as vscode from "vscode";
+
+export interface GitRepository {
+  rootUri: vscode.Uri;
+  inputBox: {
+    value: string;
+  };
+  state: {
+    indexChanges: unknown[];
+    workingTreeChanges: unknown[];
+  };
+}
+
+export interface DiffResult {
+  diff: string;
+  stats: string;
+}
+
+export interface ClaudeCommitConfig {
+  cliPath: string;
+  apiKey: string;
+  preferredMethod: "auto" | "cli" | "api";
+  model: "haiku" | "sonnet" | "opus";
+  language: "en" | "ua";
+  multiLineCommit: boolean;
+}
+
+export type ProgressCallback = (message: string) => void;
+
+export type Language = "en" | "ua";
+
+export type Model = "haiku" | "sonnet" | "opus";
+
+export type GenerationMethod = "auto" | "cli" | "api";

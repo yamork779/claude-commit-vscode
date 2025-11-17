@@ -23,7 +23,7 @@
 	"activationEvents": [
 		"onStartupFinished"
 	],
-	"main": "./src/extension.js",
+	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
@@ -118,6 +118,8 @@
 		"@types/node": "^18.0.0",
 		"@types/vscode": "^1.75.0",
 		"eslint": "^8.50.0",
+		"ts-loader": "^9.5.1",
+		"typescript": "^5.3.0",
 		"webpack": "^5.88.0",
 		"webpack-cli": "^5.1.4"
 	},
