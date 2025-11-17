@@ -17,8 +17,13 @@ You're already investing in Claude Code – whether it's Pro, Max ×5, or Max ×
 - **One-click commit message generation**: The sparkle button ✨ you know and love, right in VS Code's Source Control panel
 - **Powered by your Claude CLI**: Uses your existing Claude installation – no extra API keys or subscriptions needed
 - **Context-aware analysis**: Understands your git diff to generate meaningful, conventional commit messages
+- **Edit with feedback**: Not satisfied? Click "Edit with feedback" to refine the message with AI assistance
+- **Multi-line commit support**: Generate detailed commits with body and footer for complex changes
+- **Model selection**: Choose between Haiku (fast), Sonnet (balanced), or Opus (most capable)
 - **Bilingual support**: Works in English and Ukrainian
 - **Flexible backend**: Automatically uses Claude CLI, with API fallback option
+- **Auto-discovery & caching**: Finds and remembers your Claude CLI path automatically
+- **Progress indicators**: See exactly what's happening during generation
 - **Seamless VS Code integration**: Works directly with the built-in Git interface
 
 ## Requirements
@@ -54,8 +59,10 @@ This extension keeps it simple with just a few optional settings:
 
 * `claudeCommit.cliPath`: Path to Claude CLI executable (leave empty for auto-detection)
 * `claudeCommit.preferredMethod`: Choose AI backend (`auto`, `cli`, or `api`) – defaults to `auto`
+* `claudeCommit.model`: Claude model to use (`haiku`, `sonnet`, `opus`) – defaults to `haiku`
 * `claudeCommit.apiKey`: Your Anthropic API key (only needed if using API method)
 * `claudeCommit.language`: Interface language (`en` for English, `ua` for Ukrainian)
+* `claudeCommit.multiLineCommit`: Generate detailed multi-line commits with body and footer – defaults to `false`
 
 ## Configuration Examples
 
@@ -89,6 +96,22 @@ The extension will automatically search for Claude CLI in common locations.
     "claudeCommit.language": "ua"
 }
 ```
+
+### Detailed multi-line commits
+```json
+{
+    "claudeCommit.multiLineCommit": true
+}
+```
+This generates commits with subject, body, and footer following the full conventional commits format.
+
+### Using a specific model
+```json
+{
+    "claudeCommit.model": "sonnet"
+}
+```
+Available models: `haiku` (fast, default), `sonnet` (balanced), `opus` (most capable).
 
 ## Troubleshooting
 
