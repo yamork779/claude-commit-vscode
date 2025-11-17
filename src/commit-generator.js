@@ -327,38 +327,50 @@ async function generateWithCLI(prompt) {
 	// Екрануємо шлях для використання в shell
 	const escapedCliPath = cliPath.includes(" ") ? `"${cliPath}"` : cliPath;
 
-	// Використовуємо -p (print) флаг для неінтерактивного режиму
-	// Передаємо промпт як аргумент, а не через stdin
-	// Екрануємо одинарні лапки в промпті
-	const escapedPrompt = prompt.replace(/'/g, "'\\''");
+	// Записуємо промпт у тимчасовий файл щоб уникнути проблем з екрануванням
+	const tmpDir = os.tmpdir();
+	const promptFile = path.join(tmpDir, `claude-commit-prompt-${Date.now()}.txt`);
 
-	const command =
-		process.platform === "win32"
-			? `${escapedCliPath} -p "${prompt.replace(/"/g, '\\"')}"`
-			: `${escapedCliPath} -p '${escapedPrompt}'`;
+	try {
+		await fs.promises.writeFile(promptFile, prompt, "utf-8");
 
-	const { stdout } = await execAsync(command, {
-		shell: process.platform === "win32" ? "cmd.exe" : "/bin/bash",
-		maxBuffer: 10 * 1024 * 1024,
-		timeout: 60000, // 1 хвилина для генерації
-	});
+		// Використовуємо явну модель для уникнення проблем з thinking strategy
+		// Haiku швидший і дешевший для простих задач як генерація commit message
+		const command =
+			process.platform === "win32"
+				? `type "${promptFile}" | ${escapedCliPath} -p --model haiku`
+				: `cat "${promptFile}" | ${escapedCliPath} -p --model haiku`;
 
-	// Парсимо відповідь - шукаємо conventional commit
-	const lines = stdout
-		.split("\n")
-		.map((line) => line.trim())
-		.filter((line) => line.length > 0);
+		const { stdout } = await execAsync(command, {
+			shell: process.platform === "win32" ? "cmd.exe" : "/bin/bash",
+			maxBuffer: 10 * 1024 * 1024,
+			timeout: 60000, // 1 хвилина для генерації
+		});
 
-	const conventionalCommitPattern =
-		/^(feat|fix|docs|style|refactor|test|chore|perf)(\(.+?\))?:.+/;
+		// Парсимо відповідь - шукаємо conventional commit
+		const lines = stdout
+			.split("\n")
+			.map((line) => line.trim())
+			.filter((line) => line.length > 0);
 
-	for (let i = lines.length - 1; i >= 0; i--) {
-		if (conventionalCommitPattern.test(lines[i])) {
-			return lines[i];
+		const conventionalCommitPattern =
+			/^(feat|fix|docs|style|refactor|test|chore|perf)(\(.+?\))?:.+/;
+
+		for (let i = lines.length - 1; i >= 0; i--) {
+			if (conventionalCommitPattern.test(lines[i])) {
+				return lines[i];
+			}
+		}
+
+		return lines[lines.length - 1] || "chore: update code";
+	} finally {
+		// Видаляємо тимчасовий файл
+		try {
+			await fs.promises.unlink(promptFile);
+		} catch {
+			// Ігноруємо помилки видалення
 		}
 	}
-
-	return lines[lines.length - 1] || "chore: update code";
 }
 
 /**
