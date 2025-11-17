@@ -1,6 +1,7 @@
-const path = require('path');
+import path from 'path';
+import { Configuration } from 'webpack';
 
-module.exports = {
+const config: Configuration = {
   target: 'node',
   mode: 'none',
   entry: './src/extension.ts',
@@ -21,12 +22,10 @@ module.exports = {
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'ts-loader'
-          }
-        ]
+        use: ['ts-loader']
       }
     ]
   }
 };
+
+export default config;
