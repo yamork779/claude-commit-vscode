@@ -3,6 +3,41 @@ import { generateCommitMessage, editCommitMessage, generateWithCustomPrompt } fr
 import type { GitRepository, GitAPI, Language } from "./types";
 
 /**
+ * Show an information message that auto-closes after a specified timeout.
+ * Returns the selected button or undefined if auto-closed/dismissed.
+ */
+function showAutoCloseMessage(
+  message: string,
+  timeoutSeconds: number,
+  ...buttons: string[]
+): Promise<string | undefined> {
+  return new Promise((resolve) => {
+    let resolved = false;
+
+    const resolveOnce = (result: string | undefined) => {
+      if (!resolved) {
+        resolved = true;
+        resolve(result);
+      }
+    };
+
+    // Auto-close timer
+    const timer = setTimeout(() => {
+      resolveOnce(undefined);
+    }, timeoutSeconds * 1000);
+
+    // Show message with countdown hint in text
+    const messageWithHint = `${message} (${timeoutSeconds}s)`;
+    vscode.window
+      .showInformationMessage(messageWithHint, ...buttons)
+      .then((result) => {
+        clearTimeout(timer);
+        resolveOnce(result);
+      });
+  });
+}
+
+/**
  * Get the Git repository from a SourceControl object passed by VS Code
  * when a command is triggered from the SCM title menu.
  */
@@ -157,16 +192,23 @@ export function activate(context: vscode.ExtensionContext): void {
           // Show different buttons based on mode
           const isManagedMode = claudeCodeManaged && preferredMethod === "cli";
 
-          const action = isManagedMode
-            ? await vscode.window.showInformationMessage(
+          const buttons = isManagedMode
+            ? ["Custom prompt"]
+            : ["Edit with feedback"];
+
+          // Get auto-close timeout from config
+          const autoCloseSeconds = config.get<number>("messageAutoCloseSeconds", 5);
+
+          // Show message with auto-close (or without if set to 0)
+          const action = autoCloseSeconds > 0
+            ? await showAutoCloseMessage(
                 "Commit message generated!",
-                "Custom prompt",
-                "OK"
+                autoCloseSeconds,
+                ...buttons
               )
             : await vscode.window.showInformationMessage(
                 "Commit message generated!",
-                "Edit with feedback",
-                "OK"
+                ...buttons
               );
 
           if (action === "Edit with feedback") {

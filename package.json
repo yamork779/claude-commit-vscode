@@ -138,6 +138,14 @@
 					"default": false,
 					"markdownDescription": "Keep Co-Authored-By signature in commit message. **Only works in Claude Code managed mode**",
 					"order": 9
+				},
+				"claudeCommit.messageAutoCloseSeconds": {
+					"type": "number",
+					"default": 5,
+					"minimum": 0,
+					"maximum": 60,
+					"description": "Auto-close timeout for the success message in seconds. Set to 0 to disable auto-close.",
+					"order": 10
 				}
 			}
 		}
