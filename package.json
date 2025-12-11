@@ -146,6 +146,12 @@
 					"maximum": 60,
 					"description": "Auto-close timeout for the success message in seconds. Set to 0 to disable auto-close.",
 					"order": 10
+				},
+				"claudeCommit.privacyMode": {
+					"type": "boolean",
+					"default": false,
+					"description": "Privacy mode: Restrict temporary prompt file permissions to owner-only (0600). When disabled, uses default permissions (0644).",
+					"order": 11
 				}
 			}
 		}
