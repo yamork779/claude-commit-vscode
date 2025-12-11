@@ -150,7 +150,7 @@
 				"claudeCommit.privacyMode": {
 					"type": "boolean",
 					"default": false,
-					"description": "Privacy mode: Restrict temporary prompt file permissions to owner-only (0600). When disabled, uses default permissions (0644).",
+					"markdownDescription": "Privacy mode: Restrict temporary prompt file permissions to owner-only (0600). When disabled, uses default permissions (0644). **Note: This option only takes effect on Linux/macOS. On Windows, file permissions are managed by the OS and this setting is ignored.**",
 					"order": 11
 				}
 			}
