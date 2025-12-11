@@ -23,6 +23,7 @@ export async function generateWithCLI(
 
   const config = vscode.workspace.getConfiguration("claudeCommit");
   const model = config.get<Model>("model", "haiku");
+  const privacyMode = config.get<boolean>("privacyMode", false);
 
   const tmpDir = os.tmpdir();
   const promptFile = path.join(
@@ -31,7 +32,7 @@ export async function generateWithCLI(
   );
 
   try {
-    await fs.promises.writeFile(promptFile, prompt, "utf-8");
+    await fs.promises.writeFile(promptFile, prompt, { encoding: "utf-8", mode: privacyMode ? 0o600 : 0o644 });
 
     if (progressCallback) {
       progressCallback(`Using ${model} model...`);
@@ -122,6 +123,9 @@ export async function generateWithCLIManaged(
 
   const escapedCliPath = cliPath.includes(" ") ? `"${cliPath}"` : cliPath;
 
+  const config = vscode.workspace.getConfiguration("claudeCommit");
+  const privacyMode = config.get<boolean>("privacyMode", false);
+
   const tmpDir = os.tmpdir();
   const promptFile = path.join(
     tmpDir,
@@ -129,7 +133,7 @@ export async function generateWithCLIManaged(
   );
 
   try {
-    await fs.promises.writeFile(promptFile, prompt, "utf-8");
+    await fs.promises.writeFile(promptFile, prompt, { encoding: "utf-8", mode: privacyMode ? 0o600 : 0o644 });
 
     if (progressCallback) {
       progressCallback("Using haiku model (managed mode)...");
