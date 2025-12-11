@@ -40,7 +40,9 @@ export async function generateCommitMessage(
     }
 
     const keepCoAuthoredBy = config.get<boolean>("keepCoAuthoredBy", false);
-    const prompt = createManagedPrompt(language, keepCoAuthoredBy, "");
+    const multiLine = config.get<boolean>("multiLineCommit", false);
+    const diffSource = config.get<DiffSource>("diffSource", "auto");
+    const prompt = createManagedPrompt(language, keepCoAuthoredBy, multiLine, diffSource, "");
     return await generateWithCLIManaged(prompt, repoPath, progressCallback);
   }
 
@@ -161,7 +163,9 @@ export async function generateWithCustomPrompt(
   }
 
   const keepCoAuthoredBy = config.get<boolean>("keepCoAuthoredBy", false);
-  const prompt = createManagedPrompt(language, keepCoAuthoredBy, customPrompt);
+  const multiLine = config.get<boolean>("multiLineCommit", false);
+  const diffSource = config.get<DiffSource>("diffSource", "auto");
+  const prompt = createManagedPrompt(language, keepCoAuthoredBy, multiLine, diffSource, customPrompt);
   return await generateWithCLIManaged(prompt, repoPath, progressCallback);
 }
 

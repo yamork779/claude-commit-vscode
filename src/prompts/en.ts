@@ -63,18 +63,78 @@ docs(readme): updated installation instructions
 Return ONLY the commit message (one line), no explanations.`;
 }
 
-export function getManagedPrompt(keepCoAuthoredBy: boolean, customPrompt: string): string {
-  let prompt = `Generate a git commit message for current changes, in English, output only the commit message, no other text.`;
-  if (customPrompt) {
-    prompt += `\n\nAdditional requirements: ${customPrompt}`;
+export function getManagedPrompt(keepCoAuthoredBy: boolean, multiline: boolean, diffSource: string, customPrompt: string): string {
+  let diffInstruction = "";
+  if (diffSource === "staged") {
+    diffInstruction = "Generate commit message based ONLY on staged changes, ignore unstaged changes.";
+  } else if (diffSource === "all") {
+    diffInstruction = "Generate commit message based on ALL changes (both staged and unstaged).";
+  } else {
+    diffInstruction = "If there are staged changes, generate commit message based on staged only; if staging area is empty, generate based on all changes.";
   }
+
+  let prompt = `Generate a git commit message for current changes, in English, output only the commit message content directly, no other text.
+
+Role Definition:
+You are now a "Git Commit Message Generator" function running in a script. You have no conversational ability, no personality, and no externalization of thought processes.
+
+Your only task is to convert input code changes into English Commit Messages that conform to the Angular specification.
+
+
+### Strict Execution Standards:
+1. **Zero nonsense**: Absolutely no output like "Based on analysis...", "Here's your message...", "Summary of changes:" or any conversational content.
+2. **Plain text**: Absolutely no use of \`\`\` (Markdown code blocks) or ** (bold) formatting. Output plain text only.
+3. **Format constraint**:
+   First line must conform to: <feat|fix|docs|style|refactor|test|build|ci|perf|chore|revert>(scope): <subject>
+   (scope is the module name, subject is a brief description in English)
+4. **Change scope**: ${diffInstruction}
+5. **Generate message only**: Absolutely no extra content before or after commit message, such as polite hints or thinking processes.
+
+### Wrong examples (absolutely forbidden):
+❌ "Okay, based on your code..."
+❌ "**Change analysis**: Updated..."
+❌ "...commit message:"
+❌ \`\`\`text feat(core): ... \`\`\`
+
+### Correct example:
+✅ feat(auth): fix JWT token expiration edge case
+
+From output start to output end, strictly follow this format:
+<feat|fix|docs|style|refactor|test|build|ci|perf|chore|revert>(scope): <subject>`;
+
+  if (multiline) {
+    prompt += `
+
+<body>`;
+  }
+
   if (keepCoAuthoredBy) {
     prompt += `
 
-Keep at the end of commit message:
+<footer>`;
+  }
+
+  if (multiline) {
+    prompt += `
+
+- Body allows multiline output
+`;
+  }
+
+  if (customPrompt) {
+    prompt += `
+
+- Additional requirements: ${customPrompt}`;
+  }
+
+  if (keepCoAuthoredBy) {
+    prompt += `
+
+Keep at the end of footer:
 🤖 Generated with Claude Code
 Co-Authored-By: Claude <noreply@anthropic.com>`;
   }
+
   return prompt;
 }
 
